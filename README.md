@@ -1,55 +1,55 @@
 ````markdown
 # CSE334 Database Lab – BOOK_E Backend
 
-Backend API for the **BOOK_E** project used in the **CSE334 Database Lab** course.
+Backend API for the BOOK_E project used in the CSE334 Database Lab course.
 
-This is a Node.js + Express REST API backed by a **MySQL** database using **Sequelize** ORM.  
+This is a Node.js + Express REST API backed by a MySQL database using Sequelize ORM.  
 It supports user authentication, book listing and management, ordering between users, ratings, reviews, and genres.
 
 ---
 
-## Main Features
+ Main Features
 
--  **User authentication**
+-  User authentication
   - Registration & login with hashed passwords (bcrypt)
   - JWT-based authentication
   - User profile fetch & update (with profile picture upload)
 
--  **Book management**
+-  Book management
   - Create book listings (with image upload)
   - Search and filter books
   - List all books / books by user
   - Update & delete listings
   - See uploader profile for a specific book
 
--  **Order system**
+-  Order system
   - Place orders on books
   - View placed and received orders
   - Confirm / discard orders
 
--  **Ratings & Reviews**
+-  Ratings & Reviews
   - Leave ratings for users
   - Leave written reviews
   - Fetch ratings (with average) and reviews for a user
 
--  **Genres**
+-  Genres
   - Add genres
   - Retrieve all genres
 
--  **File uploads**
+-  File uploads
   - Static hosting for uploaded files (book images, profile pictures) via `/uploads`
 
 ---
 
-## 🛠 Tech Stack
+ Tech Stack
 
-- **Runtime:** Node.js
-- **Framework:** Express.js
-- **Database:** MySQL
-- **ORM:** Sequelize
-- **Auth:** JSON Web Tokens (JWT), bcryptjs
-- **Uploads:** multer, static `/uploads` directory
-- **Other libs:**
+- Runtime: Node.js
+- Framework: Express.js
+- Database: MySQL
+- ORM: Sequelize
+- Auth: JSON Web Tokens (JWT), bcryptjs
+- Uploads: multer, static `/uploads` directory
+- Other libs:
   - `cors`
   - `body-parser`
   - `express-validator` (used in controllers)
@@ -58,7 +58,7 @@ See [`package.json`](./package.json) for full dependency list.
 
 ---
 
-##  Project Structure
+  Project Structure
 
 ```bash
 DatabaseLab_BOOK_E_Backend/
@@ -103,23 +103,23 @@ DatabaseLab_BOOK_E_Backend/
 
 ---
 
-##  Setup & Installation
+  Setup & Installation
 
-###  Prerequisites
+#  Prerequisites
 
-* [Node.js](https://nodejs.org/) (recommended: v16+)
-* [MySQL](https://www.mysql.com/) server
-* A database named (by default) `booke`
+ [Node.js](https://nodejs.org/) (recommended: v16+)
+ [MySQL](https://www.mysql.com/) server
+ A database named (by default) `booke`
   (You can change this in `models/database.js`.)
 
-###  Clone the repository
+#  Clone the repository
 
 ```bash
 git clone https://github.com/Fahad-Bin-Mahbub/DatabaseLab_BOOK_E_Backend.git
 cd DatabaseLab_BOOK_E_Backend
 ```
 
-###  Configure the database
+#  Configure the database
 
 Open `models/database.js` and set your MySQL credentials:
 
@@ -141,7 +141,7 @@ const sequelize = new Sequelize(database, username, password, {
 > By default, Sequelize does `sequelize.sync({ force: false })` and will create/update tables automatically.
 
 
-###  Install dependencies
+#  Install dependencies
 
 ```bash
 npm install
@@ -149,9 +149,9 @@ npm install
 
 ---
 
-## Running the Server
+ Running the Server
 
-### Development
+# Development
 
 ```bash
 npm run dev
@@ -159,7 +159,7 @@ npm run dev
 
 This uses `nodemon` to reload on file changes.
 
-### Production / Simple run
+# Production / Simple run
 
 ```bash
 npm start
@@ -181,7 +181,7 @@ PORT=4000 npm start
 
 ---
 
-## Express App & Routing
+ Express App & Routing
 
 In `index.js`, the routes are mounted as:
 
@@ -201,18 +201,18 @@ So the full API paths are `/api/<module>/...`.
 
 ---
 
-## API Reference (Overview)
+ API Reference (Overview)
 
 Below is a summary of the main endpoints. For a full understanding, see the corresponding controllers and routes.
 
-### 1. Auth (`/api/auth`)
+# 1. Auth (`/api/auth`)
 
-**File:** `routes/authRoutes.js` → `controllers/authController.js`
+File: `routes/authRoutes.js` → `controllers/authController.js`
 
-* `POST /api/auth/register`
+ `POST /api/auth/register`
   Register a new user.
 
-  **Body (JSON example):**
+  Body (JSON example):
 
   ```json
   {
@@ -223,10 +223,10 @@ Below is a summary of the main endpoints. For a full understanding, see the corr
   }
   ```
 
-* `POST /api/auth/login`
+ `POST /api/auth/login`
   Log in a user and receive a JWT token.
 
-  **Body:**
+  Body:
 
   ```json
   {
@@ -239,88 +239,88 @@ Below is a summary of the main endpoints. For a full understanding, see the corr
 
 ---
 
-### 2. Users (`/api/user`)
+# 2. Users (`/api/user`)
 
-**File:** `routes/userRoutes.js`
+File: `routes/userRoutes.js`
 Controllers: `authController.js`, `userController.js`
 
-* `POST /api/user/register`
+ `POST /api/user/register`
 
-* `POST /api/user/login`
+ `POST /api/user/login`
   (Same behavior as the `/api/auth` endpoints.)
 
-* `GET /api/user/profile`
+ `GET /api/user/profile`
   Get the profile of the currently authenticated user.
 
-  * **Headers:** `Authorization: Bearer <token>`
+   Headers: `Authorization: Bearer <token>`
 
-* `GET /api/user/uploader-profile/:user_id`
+ `GET /api/user/uploader-profile/:user_id`
   Get public profile information for a user by ID (e.g. book uploader).
 
-* `PUT /api/user/profile/edit`
+ `PUT /api/user/profile/edit`
   Update the profile of the authenticated user, including profile picture.
 
-  * **Headers:** `Authorization: Bearer <token>`
-  * **Form-data:**
+   Headers: `Authorization: Bearer <token>`
+   Form-data:
 
-    * `profile_picture` – file (handled by multer in `upload.js`)
-    * Other profile fields as defined in `userController.editUserProfile`
+     `profile_picture` – file (handled by multer in `upload.js`)
+     Other profile fields as defined in `userController.editUserProfile`
 
 ---
 
-### 3. Books (`/api/book`)
+# 3. Books (`/api/book`)
 
-**File:** `routes/bookRoutes.js` → `controllers/bookController.js`
+File: `routes/bookRoutes.js` → `controllers/bookController.js`
 
-* `POST /api/book/add`
+ `POST /api/book/add`
   Add a new book listing.
 
-  * **Headers:** `Authorization: Bearer <token>`
-  * **Form-data:**
+   Headers: `Authorization: Bearer <token>`
+   Form-data:
 
-    * `book_img_url` – file (book image)
-    * Other fields (based on `Book` model and controller), e.g.:
+     `book_img_url` – file (book image)
+     Other fields (based on `Book` model and controller), e.g.:
 
       ```text
       title, author, genre, price, book_condition, description, is_for_sale, is_for_exchange, ...
       ```
 
-* `GET /api/book/search`
+ `GET /api/book/search`
   Search books based on query parameters (e.g. title, author, etc.).
 
-* `GET /api/book/filter`
+ `GET /api/book/filter`
   Filter books by various criteria (e.g. genre, price range, condition).
 
-* `GET /api/book/allbooks`
+ `GET /api/book/allbooks`
   Get all available books (excluding those already transacted).
 
-* `GET /api/book/book/:book_id`
+ `GET /api/book/book/:book_id`
   Get detailed information for a single book.
 
-* `GET /api/book/userbooks/:user_id`
+ `GET /api/book/userbooks/:user_id`
   Get all books uploaded by a specific user.
 
-* `PUT /api/book/:id`
+ `PUT /api/book/:id`
   Update book information.
 
-* `DELETE /api/book/:id`
+ `DELETE /api/book/:id`
   Delete a book.
 
-* `GET /api/book/uploader-profile/:book_id`
+ `GET /api/book/uploader-profile/:book_id`
   Get uploader profile info for a given book.
 
 ---
 
-### 4. Orders (`/api/order`)
+# 4. Orders (`/api/order`)
 
-**File:** `routes/orderRoutes.js` → `controllers/orderController.js`
+File: `routes/orderRoutes.js` → `controllers/orderController.js`
 
 All endpoints require authentication (`authmiddleware`).
 
-* `POST /api/order/place-order`
+ `POST /api/order/place-order`
   Place an order for a book.
 
-  **Typical body fields:** (see `orderController.placeOrder`)
+  Typical body fields: (see `orderController.placeOrder`)
 
   ```json
   {
@@ -331,29 +331,29 @@ All endpoints require authentication (`authmiddleware`).
   }
   ```
 
-* `GET /api/order/user-orders`
+ `GET /api/order/user-orders`
   Get orders placed by the authenticated user (as buyer).
 
-* `GET /api/order/received-orders`
+ `GET /api/order/received-orders`
   Get orders received by the authenticated user (as seller).
 
-* `POST /api/order/confirm-order/:order_id`
+ `POST /api/order/confirm-order/:order_id`
   Confirm an order (seller action).
 
-* `POST /api/order/discard-order/:order_id`
+ `POST /api/order/discard-order/:order_id`
   Discard/cancel an order.
 
 ---
 
-### 5. Reviews (`/api/review`)
+# 5. Reviews (`/api/review`)
 
-**File:** `routes/reviewRoutes.js` → `controllers/reviewController.js`
+File: `routes/reviewRoutes.js` → `controllers/reviewController.js`
 
-* `POST /api/review/add-review/:user_id`
-  Add a review *for* the user with ID `user_id`.
+ `POST /api/review/add-review/:user_id`
+  Add a review for the user with ID `user_id`.
 
-  * **Headers:** `Authorization: Bearer <token>`
-  * **Body example:**
+   Headers: `Authorization: Bearer <token>`
+   Body example:
 
     ```json
     {
@@ -361,20 +361,20 @@ All endpoints require authentication (`authmiddleware`).
     }
     ```
 
-* `GET /api/review/reviews/:user_id`
+ `GET /api/review/reviews/:user_id`
   Get all reviews for a recipient user.
 
 ---
 
-### 6. Ratings (`/api/rating`)
+# 6. Ratings (`/api/rating`)
 
-**File:** `routes/ratingRoutes.js` → `controllers/ratingController.js`
+File: `routes/ratingRoutes.js` → `controllers/ratingController.js`
 
-* `POST /api/rating/add-rating/:user_id`
+ `POST /api/rating/add-rating/:user_id`
   Add a rating for the user with ID `user_id`.
 
-  * **Headers:** `Authorization: Bearer <token>`
-  * **Body example:**
+   Headers: `Authorization: Bearer <token>`
+   Body example:
 
     ```json
     {
@@ -382,19 +382,19 @@ All endpoints require authentication (`authmiddleware`).
     }
     ```
 
-* `GET /api/rating/ratings/:user_id`
+ `GET /api/rating/ratings/:user_id`
   Get ratings and average rating for a user.
 
 ---
 
-### 7. Genres (`/api/genre`)
+# 7. Genres (`/api/genre`)
 
-**File:** `routes/genreRoutes.js` → `controllers/genreController.js`
+File: `routes/genreRoutes.js` → `controllers/genreController.js`
 
-* `POST /api/genre/add`
+ `POST /api/genre/add`
   Add a new genre.
 
-  **Body example:**
+  Body example:
 
   ```json
   {
@@ -402,86 +402,86 @@ All endpoints require authentication (`authmiddleware`).
   }
   ```
 
-* `GET /api/genre/all`
+ `GET /api/genre/all`
   Get all genres.
 
 ---
 
-##  Data Models (High-Level)
+  Data Models (High-Level)
 
 Models are defined with Sequelize in `models/` and wired together in `models/database.js`. Roughly:
 
-* **User**
+ User
 
-  * Basic identity (username, email, password hash)
-  * Profile fields (address, profile picture, etc.)
-  * Relations:
+   Basic identity (username, email, password hash)
+   Profile fields (address, profile picture, etc.)
+   Relations:
 
-    * `User` ↔ `Book` (hasMany)
-    * `User` ↔ `Order` (as buyer and seller)
-    * `User` ↔ `Rating` (as rater and recipient)
-    * `User` ↔ `Review` (as reviewer and recipient)
+     `User` ↔ `Book` (hasMany)
+     `User` ↔ `Order` (as buyer and seller)
+     `User` ↔ `Rating` (as rater and recipient)
+     `User` ↔ `Review` (as reviewer and recipient)
 
-* **Book**
+ Book
 
-  * Book details: `title`, `author`, `genre`, `book_condition`, pricing info, flags for sale/exchange, image URL, etc.
-  * Linked to uploader via `user_id`.
+   Book details: `title`, `author`, `genre`, `book_condition`, pricing info, flags for sale/exchange, image URL, etc.
+   Linked to uploader via `user_id`.
 
-* **Order**
+ Order
 
-  * Links buyer, seller, and book.
-  * Fields like status, timestamps, etc.
+   Links buyer, seller, and book.
+   Fields like status, timestamps, etc.
 
-* **Rating**
+ Rating
 
-  * Numeric rating (e.g., 1–5)
-  * Relations:
+   Numeric rating (e.g., 1–5)
+   Relations:
 
-    * `ratings.belongsTo(users, { as: 'Recipient', foreignKey: 'recipient_id' })`
-    * `ratings.belongsTo(users, { as: 'Rater', foreignKey: 'rater_id' })`
+     `ratings.belongsTo(users, { as: 'Recipient', foreignKey: 'recipient_id' })`
+     `ratings.belongsTo(users, { as: 'Rater', foreignKey: 'rater_id' })`
 
-* **Review**
+ Review
 
-  * Text comment + reviewer/recipient relationship.
+   Text comment + reviewer/recipient relationship.
 
-* **Genre**
+ Genre
 
-  * Simple genre entity, related to books.
+   Simple genre entity, related to books.
 
 > For exact fields, check each model file in `models/`.
 
 ---
 
-##  File Uploads
+  File Uploads
 
-* Static files are served from the `/uploads` directory:
+ Static files are served from the `/uploads` directory:
 
   ```js
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
   ```
-* Multer configuration lives in `middleware/upload.js`.
-* Endpoints that accept files:
+ Multer configuration lives in `middleware/upload.js`.
+ Endpoints that accept files:
 
-  * `POST /api/book/add` (field: `book_img_url`)
-  * `PUT /api/user/profile/edit` (field: `profile_picture`)
+   `POST /api/book/add` (field: `book_img_url`)
+   `PUT /api/user/profile/edit` (field: `profile_picture`)
 
 The client should send these as `multipart/form-data`.
 
 ---
 
-##  Testing
+  Testing
 
 There is no dedicated test suite configured (no Jest/Mocha, etc.) in this project.
 
 You can manually test the API using:
 
-* [Postman](https://www.postman.com/)
-* [Insomnia](https://insomnia.rest/)
-* cURL or any HTTP client
+ [Postman](https://www.postman.com/)
+ [Insomnia](https://insomnia.rest/)
+ cURL or any HTTP client
 
 ---
 
-##  Error Handling
+  Error Handling
 
 A simple error-handling middleware is defined in `index.js`:
 
@@ -496,9 +496,9 @@ Controllers also handle their own validation/error responses where necessary (of
 
 ---
 
-## Contributing
+ Contributing
 
-This project is mainly for **CSE334 Database Lab** coursework.
+This project is mainly for CSE334 Database Lab coursework.
 
 If you still want to extend it:
 
@@ -513,16 +513,16 @@ If you still want to extend it:
 
 ---
 
-##  License & Usage
+  License & Usage
 
-> This project is created for educational use as part of the **CSE334 Database Lab** course.
+> This project is created for educational use as part of the CSE334 Database Lab course.
 > Not intended for production use.
 
 ---
 
-## ✍️ Author
+ ✍️ Author
 
-* **Fahad Bin Mahbub**
+ Fahad Bin Mahbub
   GitHub: [@Fahad-Bin-Mahbub](https://github.com/Fahad-Bin-Mahbub)
 
 ```
